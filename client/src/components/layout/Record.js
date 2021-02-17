@@ -7,7 +7,7 @@ import {Redirect} from 'react-router-dom';
 import {getRecords, deleteRecord, returnItem, selectStatus} from '../../actions/record';
 import Moment from 'react-moment';
 
-const Dashboard = ({auth, getRecords, record, deleteRecord, returnItem, selectStatus}) => {
+const Record = ({auth, getRecords, record, deleteRecord, returnItem, selectStatus}) => {
     useEffect(() => {
         if(auth.isAuthenticated) {
             getRecords();
@@ -46,8 +46,6 @@ const Dashboard = ({auth, getRecords, record, deleteRecord, returnItem, selectSt
 
                                 <Button variant='primary' type='submit' block>SEARCH</Button>
                             </Form>
-
-                            <Button href='/borrow' className='my-5' variant='success' block>BORROW ITEM</Button>
                         </Col>
 
                         <Col>
@@ -55,11 +53,13 @@ const Dashboard = ({auth, getRecords, record, deleteRecord, returnItem, selectSt
                             <Table striped bordered hover>
                                 <thead>
                                     <tr>
-                                        <th>Date</th>
+                                        <th>Date Borrowed</th>
                                         <th>Name</th>
                                         <th>Department</th>
                                         <th>Item</th>
+                                        <th>Quantity</th>
                                         <th>Status</th>
+                                        <th>Date Returned</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -67,15 +67,21 @@ const Dashboard = ({auth, getRecords, record, deleteRecord, returnItem, selectSt
                                     {record.records.map(r => (
                                         <tr key={r._id}>
                                             <td>
-                                                <Moment format='MMM DD, YYYY'>{r.date}</Moment>
+                                                <Moment format='MMM DD, YYYY'>{r.dateBorrowed}</Moment>
                                             </td>
                                             <td>{r.name}</td>
                                             <td>{r.department}</td>
-                                            <td>{r.item}</td>
+                                            <td>{r.itemName}</td>
+                                            <td>{r.itemQuantity}</td>
                                             <td>{r.status}</td>
                                             <td>
+                                                {r.dateReturned !== null &&
+                                                    <Moment format='MMM DD, YYYY'>{r.dateReturned}</Moment>
+                                                }
+                                            </td>
+                                            <td>
                                                 {r.status === 'Borrowed' && <Button variant='success' block onClick={() => returnItem(r._id)}>Return</Button>}
-                                                <Button href={`/edit/${r._id}`} variant='warning' block>Edit</Button>
+                                                {r.status !== 'Returned' && <Button href={`/edit/record/${r._id}`} variant='warning' block>Edit</Button>}
                                                 <Button variant='danger' block onClick={() => deleteRecord(r._id)}>Delete</Button>
                                             </td>
                                         </tr>
@@ -96,4 +102,4 @@ const mapStateToProps = state => ({
     record: state.record
 });
 
-export default connect(mapStateToProps, {getRecords, deleteRecord, returnItem, selectStatus})(Dashboard);
+export default connect(mapStateToProps, {getRecords, deleteRecord, returnItem, selectStatus})(Record);

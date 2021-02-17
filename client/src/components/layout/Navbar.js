@@ -9,6 +9,8 @@ const NavBar = ({logout}) => {
             <Container>
                 <Navbar.Brand href='/dashboard'>RECORD MANAGEMENT</Navbar.Brand>
                 <Nav>
+                    <Button href='/items' className='mr-5'>Items</Button>
+                    <Button href='/records' className='mr-5'>Records</Button>
                     <Button variant='danger' onClick={logout}>Logout</Button>
                 </Nav>
             </Container>

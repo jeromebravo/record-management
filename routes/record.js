@@ -2,6 +2,7 @@ const express = require('express');
 const auth = require('../middleware/auth');
 const {check, validationResult} = require('express-validator');
 const Record = require('../models/Record');
+const Item = require('../models/Item');
 const router = express.Router();
 
 // @route    POST /api/record
@@ -10,7 +11,9 @@ const router = express.Router();
 router.post('/', [auth,
     check('name', 'Name is required').notEmpty(),
     check('department', 'Department is required').notEmpty(),
-    check('item', 'Item is required').notEmpty(),
+    check('itemId', 'Item ID is required').notEmpty(),
+    check('itemName', 'Item name is required').notEmpty(),
+    check('itemQuantity', 'Item quantity must be a number').isNumeric()
 ], async (req, res) => {
     // get errors
     const errors = validationResult(req);
@@ -20,9 +23,30 @@ router.post('/', [auth,
         return res.status(400).json({errors: errors.array()});
     }
 
+    const {name, department, itemId, itemName, itemQuantity} = req.body;
+
     try {
+        // find item
+        const item = await Item.findById(itemId);
+
+        // check if item does not exists
+        if(!item) {
+            return res.status(404).json({errors: [{msg: 'Item not found'}]});
+        }
+
+        // check if not enough stocks
+        if(item.quantity < itemQuantity) {
+            return res.status(401).json({errors: [{msg: 'Not enough stocks'}]});
+        }
+
+        // reduce number of stocks
+        item.quantity -= itemQuantity;
+
+        // save item
+        await item.save();
+
         // create record
-        const record = await Record.create(req.body);
+        const record = await Record.create({name, department, itemId, itemName, itemQuantity});
 
         res.json(record);
     } catch(err) {
@@ -91,13 +115,13 @@ router.get('/:recordId', async (req, res) => {
     }
 });
 
-// @route    PUT /api/record/:recordId
+// @route    PUT /api/record/edit/:recordId
 // @desc     update record
 // @access   private
 router.put('/edit/:recordId', [auth,
     check('name', 'Name is required').notEmpty(),
     check('department', 'Department is required').notEmpty(),
-    check('item', 'Item is required').notEmpty(),
+    check('itemQuantity', 'Item quantity must be a number').isNumeric()
 ], async (req, res) => {
     // get errors
     const errors = validationResult(req);
@@ -107,7 +131,7 @@ router.put('/edit/:recordId', [auth,
         return res.status(400).json({errors: errors.array()});
     }
 
-    const {name, department, item} = req.body;
+    const {name, department, itemQuantity} = req.body;
 
     try {
         // find record
@@ -118,10 +142,27 @@ router.put('/edit/:recordId', [auth,
             return res.status(404).json({errors: [{msg: 'Record does not exists'}]});
         }
 
+        // find item
+        const item = await Item.findById(record.itemId);
+
+        // update quantity
+        item.quantity += record.itemQuantity;
+
+        // check if not enough stocks
+        if(item.quantity < itemQuantity) {
+            return res.status(400).json({errors: [{msg: 'Not enough stocks'}]});
+        }
+
+        // reduce quantity
+        item.quantity -= itemQuantity;
+
+        // save item
+        await item.save();
+
         // update record
         record.name = name;
         record.department = department;
-        record.item = item;
+        record.itemQuantity = itemQuantity;
 
         // save record
         await record.save();
@@ -133,7 +174,7 @@ router.put('/edit/:recordId', [auth,
     }
 });
 
-// @route    PUT /api/record/:recordId
+// @route    PUT /api/record/return/:recordId
 // @desc     return item
 // @access   private
 router.put('/return/:recordId', auth, async (req, res) => {
@@ -146,8 +187,18 @@ router.put('/return/:recordId', auth, async (req, res) => {
             return res.status(404).json({errors: [{msg: 'Record does not exists'}]});
         }
 
+        // find item
+        const item = await Item.findById(record.itemId);
+
+        // update quantity
+        item.quantity += record.itemQuantity;
+
+        // save item
+        await item.save();
+
         // update record
         record.status = 'Returned';
+        record.dateReturned = Date.now();
 
         // save record
         await record.save();
@@ -170,6 +221,17 @@ router.delete('/:recordId', auth, async (req, res) => {
         // check if record does not exists
         if(!record) {
             return res.status(404).json({errors: [{msg: 'Record does not exists'}]});
+        }
+
+        if(record.status !== 'Returned') {
+            // find item
+            const item = await Item.findById(record.itemId);
+
+            // update quantity
+            item.quantity += record.itemQuantity;
+
+            // save item
+            await item.save();
         }
 
         // delete record

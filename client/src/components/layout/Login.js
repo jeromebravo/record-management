@@ -44,7 +44,7 @@ const Login = ({login, isAuthenticated}) => {
                 <Button variant='primary' type='submit' block>LOGIN</Button>
             </Form>
         </Container>
-    ) : <Redirect to='/dashboard' />;
+    ) : <Redirect to='/items' />;
 }
 
 const mapStateToProps = state => ({

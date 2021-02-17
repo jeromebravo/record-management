@@ -14,3 +14,11 @@ export const UPDATE_RECORD = 'UPDATE_RECORD';
 export const DELETE_RECORD = 'DELETE_RECORD';
 export const LOADED_RECORD = 'LOADED_RECORD';
 export const RETURN_ITEM = 'RETURN_ITEM';
+
+export const LOAD_ITEM = 'LOAD_ITEM';
+export const LOADED_ITEM = 'LOADED_ITEM';
+export const GET_ITEM = 'GET_ITEM';
+export const GET_ONE_ITEM = 'GET_ONE_ITEM';
+export const CREATE_ITEM = 'CREATE_ITEM';
+export const UPDATE_ITEM = 'UPDATE_ITEM';
+export const DELETE_ITEM = 'DELETE_ITEM';

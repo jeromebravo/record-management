@@ -73,7 +73,7 @@ export const createRecord = (formData, history) => async dispatch => {
             payload: res.data
         });
 
-        history.push('/dashboard');
+        history.push('/records');
     } catch(err) {
         dispatch({type: LOADED_RECORD});
 
@@ -128,7 +128,7 @@ export const getOneRecord = (id, history) => async dispatch => {
     } catch(err) {
         dispatch({type: LOADED_RECORD});
 
-        history.push('/dashboard');
+        history.push('/records');
 
         const error = err.response.data.msg;
 
@@ -154,7 +154,7 @@ export const updateRecord = (id, formData, history) => async dispatch => {
             payload: res.data
         });
 
-        history.push('/dashboard');
+        history.push('/records');
     } catch(err) {
         dispatch({type: LOADED_RECORD});
 

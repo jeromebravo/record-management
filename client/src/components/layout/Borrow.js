@@ -1,21 +1,29 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {Container, Form, Button} from 'react-bootstrap';
 import Spinner from './Spinner';
-import {Redirect, useHistory} from 'react-router-dom';
+import {Redirect, useHistory, useRouteMatch} from 'react-router-dom';
 import {connect} from 'react-redux';
 import {createRecord} from '../../actions/record';
 import Alerts from './Alerts';
+import {getOneItem} from '../../actions/item';
 
-const Borrow = ({auth, createRecord}) => {
+const Borrow = ({auth, createRecord, getOneItem, item}) => {
+    const match = useRouteMatch();
     const history = useHistory();
+
+    useEffect(() => {
+        if(auth.isAuthenticated) {
+            getOneItem(match.params.id, history);
+        }
+    }, [match.params.id, auth.isAuthenticated]);
 
     const [formData, setFormData] = useState({
         name: '',
         department: '',
-        item: ''
+        itemQuantity: 1
     });
 
-    const {name, department, item} = formData;
+    const {name, department, itemQuantity} = formData;
 
     const handleChange = e => {
         setFormData({...formData, [e.target.name]: e.target.value});
@@ -23,7 +31,7 @@ const Borrow = ({auth, createRecord}) => {
 
     const handleSubmit = e => {
         e.preventDefault();
-        createRecord(formData, history);
+        createRecord({...formData, itemId: item.item._id, itemName: item.item.name}, history);
     }
 
     return !auth.loading ? (
@@ -32,6 +40,8 @@ const Borrow = ({auth, createRecord}) => {
                 <Form className='form mx-auto border border-info p-5' onSubmit={handleSubmit} autoComplete='off'>
                     <Alerts />
                     <h1 className='text-center'>BORROW</h1>
+                    <p className='mt-3 bold text-center'>Item: {item.item.name}</p>
+                    <p className='mt-3 bold text-center'>Stocks Quantity: {item.item.quantity}</p>
                     <Form.Group>
                         <Form.Label>
                             Name
@@ -48,9 +58,9 @@ const Borrow = ({auth, createRecord}) => {
 
                     <Form.Group>
                         <Form.Label>
-                            Item
+                            Quantity
                         </Form.Label>
-                        <Form.Control type='text' name='item' placeholder='Item' value={item} onChange={handleChange} />
+                        <Form.Control type='number' min='1' name='itemQuantity' placeholder='Quantity' value={itemQuantity} onChange={handleChange} />
                     </Form.Group>
 
                     <Button variant='primary' type='submit' block>SUBMIT</Button>
@@ -61,7 +71,8 @@ const Borrow = ({auth, createRecord}) => {
 }
 
 const mapStateToProps = state => ({
-    auth: state.auth
+    auth: state.auth,
+    item: state.item
 });
 
-export default connect(mapStateToProps, {createRecord})(Borrow);
+export default connect(mapStateToProps, {createRecord, getOneItem})(Borrow);

@@ -3,37 +3,35 @@ import {Container, Form, Button} from 'react-bootstrap';
 import {connect} from 'react-redux';
 import Spinner from './Spinner';
 import {Redirect, useRouteMatch, useHistory} from 'react-router-dom';
-import {getOneRecord, updateRecord} from '../../actions/record';
+import {getOneItem, updateItem} from '../../actions/item';
 import Alerts from './Alerts';
 
-const Edit = ({auth, record, getOneRecord, updateRecord}) => {
+const EditItem = ({auth, item, getOneItem, updateItem}) => {
     const match = useRouteMatch();
     const history = useHistory();
     
     useEffect(() => {
         if(auth.isAuthenticated) {
-            getOneRecord(match.params.id, history);
+            getOneItem(match.params.id, history);
         }
     }, [match.params.id, auth.isAuthenticated]);
 
     useEffect(() => {
-        if(!record.loading) {
+        if(!item.loading) {
             setFormData({
                 ...formData,
-                name: record.record.name,
-                department: record.record.department,
-                itemQuantity: record.record.itemQuantity
+                name: item.item.name,
+                quantity: item.item.quantity
             });
         }
-    }, [record.loading]);
+    }, [item.loading]);
 
     const [formData, setFormData] = useState({
         name: '',
-        department: '',
-        itemQuantity: '',
+        quantity: 0
     });
 
-    let {name, department, itemQuantity} = formData;
+    let {name, quantity} = formData;
 
     const handleChange = e => {
         setFormData({...formData, [e.target.name]: e.target.value});
@@ -41,12 +39,12 @@ const Edit = ({auth, record, getOneRecord, updateRecord}) => {
 
     const handleSubmit = e => {
         e.preventDefault();
-        updateRecord(record.record._id, formData, history);
+        updateItem(item.item._id, formData, history);
     }
 
     return !auth.loading ? (
         auth.isAuthenticated ? (
-            !record.loading ? (
+            !item.loading ? (
                 <Container className='mt-5'>
                     <Form className='form mx-auto border border-warning p-5' onSubmit={handleSubmit} autoComplete='off'>
                         <Alerts />
@@ -60,16 +58,9 @@ const Edit = ({auth, record, getOneRecord, updateRecord}) => {
 
                         <Form.Group>
                             <Form.Label>
-                                Department
-                            </Form.Label>
-                            <Form.Control type='text' name='department' placeholder='Department' value={department} onChange={handleChange} />
-                        </Form.Group>
-
-                        <Form.Group>
-                            <Form.Label>
                                 Quantity
                             </Form.Label>
-                            <Form.Control type='number' min='1' name='itemQuantity' placeholder='Quantity' value={itemQuantity} onChange={handleChange} />
+                            <Form.Control type='number' name='quantity' placeholder='Quantity' value={quantity} onChange={handleChange} />
                         </Form.Group>
 
                         <Button variant='warning' type='submit' block>UPDATE</Button>
@@ -82,7 +73,7 @@ const Edit = ({auth, record, getOneRecord, updateRecord}) => {
 
 const mapStateToProps = state => ({
     auth: state.auth,
-    record: state.record
+    item: state.item
 });
 
-export default connect(mapStateToProps, {getOneRecord, updateRecord})(Edit);
+export default connect(mapStateToProps, {getOneItem, updateItem})(EditItem);

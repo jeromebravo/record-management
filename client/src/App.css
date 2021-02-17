@@ -36,3 +36,6 @@
     animation: spin 1s linear infinite;
 }
 
+.bold {
+  font-size: 1.8rem;
+}
