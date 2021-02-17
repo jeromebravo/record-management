@@ -67,7 +67,9 @@ const Item = ({auth, item, getItems, deleteItem, searchItem}) => {
                                                     <Moment format='MMM DD, YYYY'>{i.date}</Moment>
                                                 </td>
                                                 <td>{i.name}</td>
-                                                <td>{i.quantity}</td>
+                                                {i.quantity < 1 ? 
+                                                    <td className='text-danger'>{i.quantity}</td>    
+                                                : <td>{i.quantity}</td>}
                                                 <td>
                                                     <Button href={`/borrow/item/${i._id}`} variant='success' block>Borrow</Button>
                                                     <Button href={`/edit/item/${i._id}`} variant='warning' block>Edit</Button>
