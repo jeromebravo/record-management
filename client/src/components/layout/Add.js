@@ -40,7 +40,7 @@ const Add = ({auth, addItem}) => {
 
                     <Form.Group>
                         <Form.Label>
-                            Department
+                            Quantity
                         </Form.Label>
                         <Form.Control type='number' min='1' name='quantity' placeholder='Quantity' value={quantity} onChange={handleChange} />
                     </Form.Group>
