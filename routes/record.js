@@ -13,7 +13,9 @@ router.post('/', [auth,
     check('department', 'Department is required').notEmpty(),
     check('itemId', 'Item ID is required').notEmpty(),
     check('itemName', 'Item name is required').notEmpty(),
-    check('itemQuantity', 'Item quantity must be a number').isNumeric()
+    check('itemQuantity', 'Item quantity must be a number').isNumeric(),
+    check('studentNumber', 'Student Number is required').notEmpty(),
+    check('contact', 'Contact Number is required').notEmpty()
 ], async (req, res) => {
     // get errors
     const errors = validationResult(req);
@@ -23,7 +25,7 @@ router.post('/', [auth,
         return res.status(400).json({errors: errors.array()});
     }
 
-    const {name, department, itemId, itemName, itemQuantity} = req.body;
+    const {name, department, itemId, itemName, itemQuantity, studentNumber, contact} = req.body;
 
     try {
         // find item
@@ -46,7 +48,7 @@ router.post('/', [auth,
         await item.save();
 
         // create record
-        const record = await Record.create({name, department, itemId, itemName, itemQuantity});
+        const record = await Record.create({name, department, itemId, itemName, itemQuantity, studentNumber, contact});
 
         res.json(record);
     } catch(err) {
@@ -121,7 +123,9 @@ router.get('/:recordId', async (req, res) => {
 router.put('/edit/:recordId', [auth,
     check('name', 'Name is required').notEmpty(),
     check('department', 'Department is required').notEmpty(),
-    check('itemQuantity', 'Item quantity must be a number').isNumeric()
+    check('itemQuantity', 'Item quantity must be a number').isNumeric(),
+    check('studentNumber', 'Student Number is required').notEmpty(),
+    check('contact', 'Contact Number is required').notEmpty()
 ], async (req, res) => {
     // get errors
     const errors = validationResult(req);
@@ -131,7 +135,7 @@ router.put('/edit/:recordId', [auth,
         return res.status(400).json({errors: errors.array()});
     }
 
-    const {name, department, itemQuantity} = req.body;
+    const {name, department, itemQuantity, studentNumber, contact} = req.body;
 
     try {
         // find record
@@ -163,6 +167,8 @@ router.put('/edit/:recordId', [auth,
         record.name = name;
         record.department = department;
         record.itemQuantity = itemQuantity;
+        record.studentNumber = studentNumber;
+        record.contact = contact;
 
         // save record
         await record.save();

@@ -20,10 +20,12 @@ const Borrow = ({auth, createRecord, getOneItem, item}) => {
     const [formData, setFormData] = useState({
         name: '',
         department: '',
-        itemQuantity: 1
+        itemQuantity: 1,
+        studentNumber: '',
+        contact: ''
     });
 
-    const {name, department, itemQuantity} = formData;
+    const {name, department, itemQuantity, studentNumber, contact} = formData;
 
     const handleChange = e => {
         setFormData({...formData, [e.target.name]: e.target.value});
@@ -61,6 +63,20 @@ const Borrow = ({auth, createRecord, getOneItem, item}) => {
                             Quantity
                         </Form.Label>
                         <Form.Control type='number' min='1' name='itemQuantity' placeholder='Quantity' value={itemQuantity} onChange={handleChange} />
+                    </Form.Group>
+
+                    <Form.Group>
+                        <Form.Label>
+                            Student Number
+                        </Form.Label>
+                        <Form.Control type='text' name='studentNumber' placeholder='Student Number' value={studentNumber} onChange={handleChange} />
+                    </Form.Group>
+
+                    <Form.Group>
+                        <Form.Label>
+                            Contact Number
+                        </Form.Label>
+                        <Form.Control type='text' name='contact' placeholder='Contact Number' value={contact} onChange={handleChange} />
                     </Form.Group>
 
                     <Button variant='primary' type='submit' block>SUBMIT</Button>

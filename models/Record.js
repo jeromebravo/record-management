@@ -6,6 +6,8 @@ const RecordSchema = new mongoose.Schema({
     itemId: {type: mongoose.Types.ObjectId, ref: 'Item'},
     itemName: {type: String, required: true},
     itemQuantity: {type: Number, required: true},
+    studentNumber: {type: String, required: true},
+    contact: {type: String, required: true},
     status: {type: String, required: true, default: 'Borrowed'},
     dateBorrowed: {type: Date, required: true, default: Date.now},
     dateReturned: {type: Date, default: null}

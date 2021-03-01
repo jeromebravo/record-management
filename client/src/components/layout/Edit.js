@@ -22,7 +22,9 @@ const Edit = ({auth, record, getOneRecord, updateRecord}) => {
                 ...formData,
                 name: record.record.name,
                 department: record.record.department,
-                itemQuantity: record.record.itemQuantity
+                itemQuantity: record.record.itemQuantity,
+                studentNumber: record.record.studentNumber,
+                contact: record.record.contact
             });
         }
     }, [record.loading]);
@@ -31,9 +33,11 @@ const Edit = ({auth, record, getOneRecord, updateRecord}) => {
         name: '',
         department: '',
         itemQuantity: '',
+        studentNumber: '',
+        contact: ''
     });
 
-    let {name, department, itemQuantity} = formData;
+    let {name, department, itemQuantity, studentNumber, contact} = formData;
 
     const handleChange = e => {
         setFormData({...formData, [e.target.name]: e.target.value});
@@ -70,6 +74,20 @@ const Edit = ({auth, record, getOneRecord, updateRecord}) => {
                                 Quantity
                             </Form.Label>
                             <Form.Control type='number' min='1' name='itemQuantity' placeholder='Quantity' value={itemQuantity} onChange={handleChange} />
+                        </Form.Group>
+
+                        <Form.Group>
+                            <Form.Label>
+                                Student Number
+                            </Form.Label>
+                            <Form.Control type='text' name='studentNumber' placeholder='Student Number' value={studentNumber} onChange={handleChange} />
+                        </Form.Group>
+
+                        <Form.Group>
+                            <Form.Label>
+                                Contact Number
+                            </Form.Label>
+                            <Form.Control type='text' name='contact' placeholder='Contact Number' value={contact} onChange={handleChange} />
                         </Form.Group>
 
                         <Button variant='warning' type='submit' block>UPDATE</Button>

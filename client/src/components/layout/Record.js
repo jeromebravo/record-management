@@ -58,6 +58,8 @@ const Record = ({auth, getRecords, record, deleteRecord, returnItem, selectStatu
                                         <th>Department</th>
                                         <th>Item</th>
                                         <th>Quantity</th>
+                                        <th>Student Number</th>
+                                        <th>Contact Number</th>
                                         <th>Status</th>
                                         <th>Date Returned</th>
                                         <th>Action</th>
@@ -73,6 +75,8 @@ const Record = ({auth, getRecords, record, deleteRecord, returnItem, selectStatu
                                             <td>{r.department}</td>
                                             <td>{r.itemName}</td>
                                             <td>{r.itemQuantity}</td>
+                                            <td>{r.studentNumber}</td>
+                                            <td>{r.contact}</td>
                                             <td>{r.status}</td>
                                             <td>
                                                 {r.dateReturned !== null &&
@@ -82,7 +86,7 @@ const Record = ({auth, getRecords, record, deleteRecord, returnItem, selectStatu
                                             <td>
                                                 {r.status === 'Borrowed' && <Button variant='success' block onClick={() => returnItem(r._id)}>Return</Button>}
                                                 {r.status !== 'Returned' && <Button href={`/edit/record/${r._id}`} variant='warning' block>Edit</Button>}
-                                                <Button variant='danger' block onClick={() => deleteRecord(r._id)}>Delete</Button>
+                                                {/* <Button variant='danger' block onClick={() => deleteRecord(r._id)}>Delete</Button> */}
                                             </td>
                                         </tr>
                                     ))}
