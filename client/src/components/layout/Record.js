@@ -85,8 +85,8 @@ const Record = ({auth, getRecords, record, deleteRecord, returnItem, selectStatu
                                             </td>
                                             <td>
                                                 {r.status === 'Borrowed' && <Button variant='success' block onClick={() => returnItem(r._id)}>Return</Button>}
-                                                {r.status !== 'Returned' && <Button href={`/edit/record/${r._id}`} variant='warning' block>Edit</Button>}
-                                                {/* <Button variant='danger' block onClick={() => deleteRecord(r._id)}>Delete</Button> */}
+                                                {r.status === 'Borrowed' && <Button href={`/edit/record/${r._id}`} variant='warning' block>Edit</Button>}
+                                                {r.status === 'Borrowed' && <Button variant='danger' block onClick={() => deleteRecord(r._id)}>Delete</Button>}
                                             </td>
                                         </tr>
                                     ))}
