@@ -5,6 +5,8 @@ const path = require('path');
 const db = require('./db');
 const app = express();
 
+console.log('TESTING');
+
 // connect to database
 db();
 
