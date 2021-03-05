@@ -39,3 +39,7 @@
 .bold {
   font-size: 1.8rem;
 }
+
+.b-bottom {
+  border-bottom: 5px solid white;
+}
